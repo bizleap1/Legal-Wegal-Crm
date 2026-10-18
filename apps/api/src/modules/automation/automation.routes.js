@@ -1,0 +1,11 @@
+import { Router } from 'express';
+import { listRules, createRule, updateRule, listTemplates, createTemplate } from './automation.controller.js';
+import { authenticate } from '../../middleware/auth.js';
+const router = Router();
+router.use(authenticate);
+router.get('/rules', listRules);
+router.post('/rules', createRule);
+router.patch('/rules/:id', updateRule);
+router.get('/templates', listTemplates);
+router.post('/templates', createTemplate);
+export default router;

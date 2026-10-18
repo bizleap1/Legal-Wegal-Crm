@@ -1,0 +1,271 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(uuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         String    @default("salesperson") // admin, manager, salesperson
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  lastLoginAt  DateTime?
+
+  ownedLeads      Lead[]         @relation("LeadOwner")
+  leadActivities  LeadActivity[]
+  followupTasks   FollowupTask[] @relation("AssignedUserTasks")
+  feedbackGiven   Feedback[]     @relation("FeedbackCapturedBy")
+  auditLogs       AuditLog[]
+
+  @@map("users")
+}
+
+model LeadSource {
+  id                String   @id @default(uuid())
+  name              String
+  sourceType        String   @default("manual") // meta, website, google_ads, manual, api
+  externalAccountId String?
+  formId            String?
+  landingPage       String?
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+
+  leads Lead[]
+
+  @@map("lead_sources")
+}
+
+model Campaign {
+  id                 String  @id @default(uuid())
+  platform           String  @default("meta") // meta, google_ads, direct
+  externalCampaignId String?
+  campaignName       String
+  adSetId            String?
+  adSetName          String?
+  adId               String?
+  adName             String?
+  utmSource          String?
+  utmMedium          String?
+  utmCampaign        String?
+
+  leads Lead[]
+
+  @@map("campaigns")
+}
+
+model Lead {
+  id               String    @id @default(uuid())
+  firstName        String
+  lastName         String    @default("")
+  emailNormalized  String
+  phoneE164        String
+  company          String?
+  requirement      String?
+  status           String    @default("new") // new, contacted, qualified, proposal, won, lost, nurture
+  priority         String    @default("medium") // low, medium, high, urgent
+  ownerUserId      String?
+  sourceId         String?
+  sourceType       String    @default("manual")
+  sourceExternalId String?
+  campaignId       String?
+  consentStatus    String    @default("consented") // pending, consented, declined, revoked
+  consentSource    String?
+  consentAt        DateTime?
+  doNotContactAt   DateTime?
+  nextFollowupAt   DateTime?
+  wonAt            DateTime?
+  lostReason       String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  owner            User?             @relation("LeadOwner", fields: [ownerUserId], references: [id])
+  source           LeadSource?       @relation(fields: [sourceId], references: [id])
+  campaign         Campaign?         @relation(fields: [campaignId], references: [id])
+  activities       LeadActivity[]
+  followupTasks    FollowupTask[]
+  outboundMessages OutboundMessage[]
+  feedback         Feedback[]
+
+  @@index([status, createdAt])
+  @@index([ownerUserId, status])
+  @@index([phoneE164])
+  @@index([emailNormalized])
+  @@index([sourceId, createdAt])
+  @@map("leads")
+}
+
+model LeadActivity {
+  id           String   @id @default(uuid())
+  leadId       String
+  actorUserId  String?
+  activityType String   @default("note") // call, email, whatsapp, meeting, note, status_change, assignment, system
+  direction    String   @default("outbound") // inbound, outbound
+  subject      String
+  body         String
+  metadata     String?  // JSON string
+  occurredAt   DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  lead     Lead       @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  actor    User?      @relation(fields: [actorUserId], references: [id])
+  feedback Feedback[]
+
+  @@index([leadId, occurredAt])
+  @@map("lead_activities")
+}
+
+model FollowupTask {
+  id               String    @id @default(uuid())
+  leadId           String
+  assignedUserId   String
+  taskType         String    @default("call") // call, followup, email, whatsapp, review
+  dueAt            DateTime
+  status           String    @default("pending") // pending, completed, snoozed, cancelled
+  completedAt      DateTime?
+  outcome          String?
+  automationRuleId String?
+  attemptNumber    Int       @default(1)
+  idempotencyKey   String?   @unique
+
+  lead             Lead              @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  assignedUser     User              @relation("AssignedUserTasks", fields: [assignedUserId], references: [id])
+  automationRule   AutomationRule?   @relation(fields: [automationRuleId], references: [id])
+  outboundMessages OutboundMessage[]
+
+  @@index([status, dueAt])
+  @@index([assignedUserId, status, dueAt])
+  @@map("followup_tasks")
+}
+
+model AutomationRule {
+  id                String   @id @default(uuid())
+  name              String
+  triggerType       String   @default("lead_created")
+  offsetDays        Int      @default(0)
+  channel           String   @default("task") // whatsapp, email, task, call
+  templateId        String?
+  enabled           Boolean  @default(true)
+  businessHoursOnly Boolean  @default(true)
+  stopOnReply       Boolean  @default(true)
+  conditions        String?  // JSON string
+
+  template MessageTemplate? @relation(fields: [templateId], references: [id])
+  tasks    FollowupTask[]
+
+  @@map("automation_rules")
+}
+
+model MessageTemplate {
+  id                   String  @id @default(uuid())
+  channel              String  @default("whatsapp") // whatsapp, email
+  name                 String
+  providerTemplateName String?
+  subject              String?
+  body                 String
+  language             String  @default("en")
+  approvalStatus       String  @default("approved") // approved, pending, rejected
+  isActive             Boolean @default(true)
+
+  automationRules  AutomationRule[]
+  outboundMessages OutboundMessage[]
+
+  @@map("message_templates")
+}
+
+model OutboundMessage {
+  id                String    @id @default(uuid())
+  leadId            String
+  taskId            String?
+  channel           String    @default("whatsapp")
+  providerMessageId String?
+  templateId        String?
+  status            String    @default("pending") // pending, sent, delivered, read, failed
+  recipient         String
+  payload           String?   // JSON string
+  errorCode         String?
+  sentAt            DateTime?
+  deliveredAt       DateTime?
+  failedAt          DateTime?
+  idempotencyKey    String?   @unique
+  createdAt         DateTime  @default(now())
+
+  lead     Lead             @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  task     FollowupTask?    @relation(fields: [taskId], references: [id])
+  template MessageTemplate? @relation(fields: [templateId], references: [id])
+
+  @@index([status, createdAt])
+  @@map("outbound_messages")
+}
+
+model WebhookEvent {
+  id              String    @id @default(uuid())
+  provider        String    // meta, whatsapp, google_ads, email
+  externalEventId String
+  eventType       String
+  receivedAt      DateTime  @default(now())
+  processedAt     DateTime?
+  status          String    @default("pending") // pending, processed, failed, ignored
+  attempts        Int       @default(0)
+  payloadHash     String?
+  errorSummary    String?
+  payload         String?   // Raw payload JSON string
+
+  @@unique([provider, externalEventId])
+  @@index([provider, receivedAt])
+  @@map("webhook_events")
+}
+
+model IntegrationAccount {
+  id                   String    @id @default(uuid())
+  provider             String    @unique // meta, whatsapp, google_ads, email
+  accountLabel         String
+  externalAccountId    String?
+  encryptedCredentials String?
+  tokenExpiresAt       DateTime?
+  status               String    @default("connected") // connected, disconnected, error
+  lastSuccessAt        DateTime?
+  lastError            String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  @@map("integration_accounts")
+}
+
+model Feedback {
+  id         String   @id @default(uuid())
+  leadId     String
+  activityId String?
+  rating     Int      @default(5) // 1-5
+  category   String?
+  comments   String?
+  capturedBy String
+  createdAt  DateTime @default(now())
+
+  lead     Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  activity LeadActivity? @relation(fields: [activityId], references: [id])
+  user     User          @relation("FeedbackCapturedBy", fields: [capturedBy], references: [id])
+
+  @@map("feedback")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  actorUserId String?
+  action      String
+  entityType  String
+  entityId    String
+  before      String?  // JSON string
+  after       String?  // JSON string
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+
+  actor User? @relation(fields: [actorUserId], references: [id])
+
+  @@map("audit_logs")
+}

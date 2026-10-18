@@ -1,0 +1,12 @@
+import { Router } from 'express';
+import { listLeads, createLead, getLeadById, updateLead, assignLead, recordFeedback } from './leads.controller.js';
+import { authenticate } from '../../middleware/auth.js';
+const router = Router();
+router.use(authenticate);
+router.get('/', listLeads);
+router.post('/', createLead);
+router.get('/:id', getLeadById);
+router.patch('/:id', updateLead);
+router.post('/:id/assign', assignLead);
+router.post('/:id/feedback', recordFeedback);
+export default router;

@@ -1,0 +1,10 @@
+import { Router } from 'express';
+import { listIntegrations, connectMeta, testWhatsApp, testEmail } from './integrations.controller.js';
+import { authenticate } from '../../middleware/auth.js';
+const router = Router();
+router.use(authenticate);
+router.get('/', listIntegrations);
+router.post('/meta/connect', connectMeta);
+router.post('/whatsapp/test', testWhatsApp);
+router.post('/email/test', testEmail);
+export default router;

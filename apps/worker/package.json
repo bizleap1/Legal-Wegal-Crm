@@ -1,0 +1,17 @@
+{
+  "name": "@crm/worker",
+  "version": "1.0.0",
+  "main": "./src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch ./src/server.js",
+    "start": "node ./src/server.js"
+  },
+  "dependencies": {
+    "@crm/database": "*",
+    "@crm/shared": "*",
+    "bullmq": "^5.41.0",
+    "dotenv": "^16.4.7",
+    "ioredis": "^5.5.0"
+  }
+}
