@@ -168,7 +168,7 @@ export default function LegalWegalLandingPage() {
             href="/dashboard"
             style={{ fontSize: '13.5px', fontWeight: 500, color: '#334155' }}
           >
-            Client CRM
+            Launch CRM
           </Link>
           <Link
             href="/login"
