@@ -101,7 +101,7 @@ export async function listTemplates(_req, res, next) {
   try {
     const templates = await prisma.messageTemplate.findMany({
       orderBy: {
-        createdAt: 'desc'
+        name: 'asc'
       }
     });
     return res.status(200).json({
