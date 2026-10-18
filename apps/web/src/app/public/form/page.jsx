@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Scale, CheckCircle2, ArrowRight, ArrowLeft, Send } from 'lucide-react';
 import { api } from '../../../lib/api-client';
+
 export default function PublicFormSimulationPage() {
   const [form, setForm] = useState({
     name: 'Rohan Varma',
@@ -22,7 +23,8 @@ export default function PublicFormSimulationPage() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [responseMsg, setResponseMsg] = useState('');
-  const handleSubmit = async e => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     try {
@@ -35,239 +37,246 @@ export default function PublicFormSimulationPage() {
       setSubmitting(false);
     }
   };
-  return <div style={{
-    minHeight: '100vh',
-    backgroundColor: '#070b12',
-    backgroundImage: 'radial-gradient(ellipse at 50% 0%, rgba(16, 185, 129, 0.12) 0%, transparent 70%)',
-    padding: '32px 20px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
-  }}>
+
+  return (
+    <div
+      style={{
+        minHeight: '100vh',
+        backgroundColor: '#f8fafc',
+        padding: '36px 20px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+      }}
+    >
       {/* Top Navigation Back to CRM */}
-      <div style={{
-      maxWidth: '640px',
-      width: '100%',
-      marginBottom: '20px',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center'
-    }}>
-        <Link href="/leads" className="btn btn-ghost" style={{
-        padding: '6px 12px',
-        fontSize: '13px'
-      }}>
-          <ArrowLeft size={16} />
+      <div
+        style={{
+          maxWidth: '640px',
+          width: '100%',
+          marginBottom: '20px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}
+      >
+        <Link
+          href="/leads"
+          className="btn-pill-outline"
+          style={{ padding: '6px 14px', fontSize: '12.5px' }}
+        >
+          <ArrowLeft size={14} />
           <span>Return to CRM Workspace</span>
         </Link>
-        <span style={{
-        fontSize: '12px',
-        color: '#64748b'
-      }}>
-          Simulating Website Consultation Intake (Section 8.2)
+        <span style={{ fontSize: '11px', color: '#64748b', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600 }}>
+          Public Consultation Intake
         </span>
       </div>
 
-      <div style={{
-      maxWidth: '640px',
-      width: '100%'
-    }}>
+      <div style={{ maxWidth: '640px', width: '100%' }}>
         {/* Header */}
-        <div style={{
-        textAlign: 'center',
-        marginBottom: '28px'
-      }}>
-          <div style={{
-          width: '50px',
-          height: '50px',
-          borderRadius: '12px',
-          background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 8px 24px rgba(16, 185, 129, 0.3)',
-          marginBottom: '14px'
-        }}>
-            <Scale size={28} color="#ffffff" />
+        <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+          <div
+            style={{
+              width: '46px',
+              height: '46px',
+              borderRadius: '12px',
+              backgroundColor: '#09090b',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#ffffff',
+              marginBottom: '14px'
+            }}
+          >
+            <Scale size={24} />
           </div>
-          <h1 style={{
-          fontSize: '24px',
-          fontWeight: 800,
-          color: '#ffffff'
-        }}>Legal Wegal Advisory Services</h1>
-          <p style={{
-          color: '#94a3b8',
-          fontSize: '14px',
-          marginTop: '4px'
-        }}>
-            Schedule an Executive Consultation with our Senior Corporate Advocates
+          <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#09090b', letterSpacing: '-0.02em' }}>
+            Legal Wegal Advisory Services
+          </h1>
+          <p style={{ color: '#64748b', fontSize: '13.5px', marginTop: '4px' }}>
+            Schedule an Executive Consultation with our Senior Advocates
           </p>
         </div>
 
-        {submitted ? <div className="glass-panel" style={{
-        padding: '40px',
-        textAlign: 'center',
-        border: '1px solid rgba(16, 185, 129, 0.3)'
-      }}>
-            <div style={{
-          width: '60px',
-          height: '60px',
-          borderRadius: '50%',
-          backgroundColor: 'rgba(16, 185, 129, 0.2)',
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginBottom: '16px'
-        }}>
-              <CheckCircle2 size={36} color="#34d399" />
+        {submitted ? (
+          <div
+            className="card-clean"
+            style={{
+              padding: '40px',
+              textAlign: 'center',
+              backgroundColor: '#ffffff'
+            }}
+          >
+            <div
+              style={{
+                width: '56px',
+                height: '56px',
+                borderRadius: '50%',
+                backgroundColor: '#d1fae5',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '16px',
+                color: '#059669'
+              }}
+            >
+              <CheckCircle2 size={32} />
             </div>
-            <h2 style={{
-          fontSize: '20px',
-          fontWeight: 700,
-          color: '#ffffff',
-          marginBottom: '8px'
-        }}>
+            <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#09090b', marginBottom: '8px' }}>
               Inquiry Received Successfully!
             </h2>
-            <p style={{
-          color: '#cbd5e1',
-          fontSize: '14px',
-          lineHeight: 1.5,
-          marginBottom: '24px'
-        }}>
-              {responseMsg}
+            <p style={{ color: '#4b5563', fontSize: '14px', lineHeight: 1.5, marginBottom: '24px' }}>
+              {responseMsg ||
+                'Your consultation request has been captured in our CRM. A senior partner will contact you shortly.'}
             </p>
-            <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '12px'
-        }}>
-              <button onClick={() => setSubmitted(false)} className="btn btn-secondary">
-                Submit Another Consultation
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+              <button
+                onClick={() => setSubmitted(false)}
+                className="btn-secondary"
+                style={{ padding: '8px 16px' }}
+              >
+                Submit Another Inquiry
               </button>
-              <Link href="/leads" className="btn btn-emerald">
+              <Link href="/leads" className="btn-pill-dark" style={{ padding: '8px 18px' }}>
                 <span>View in CRM Leads</span>
-                <ArrowRight size={16} />
+                <ArrowRight size={14} />
               </Link>
             </div>
-          </div> : <div className="glass-panel" style={{
-        padding: '32px',
-        border: '1px solid #1e293b'
-      }}>
-            <form onSubmit={handleSubmit} style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '16px'
-        }}>
-              <div>
-                <label className="label">Full Name *</label>
-                <input type="text" className="input" value={form.name} onChange={e => setForm({
-              ...form,
-              name: e.target.value
-            })} required />
-              </div>
+          </div>
+        ) : (
+          <div
+            className="card-clean"
+            style={{
+              padding: '36px',
+              backgroundColor: '#ffffff'
+            }}
+          >
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+              {/* Honeypot anti-spam */}
+              <input
+                type="text"
+                name="website_url_hp"
+                value={form.honeypot}
+                onChange={(e) => setForm({ ...form, honeypot: e.target.value })}
+                style={{ display: 'none' }}
+                tabIndex={-1}
+                autoComplete="off"
+              />
 
-              <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '14px'
-          }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                 <div>
-                  <label className="label">Corporate Email *</label>
-                  <input type="email" className="input" value={form.email} onChange={e => setForm({
-                ...form,
-                email: e.target.value
-              })} required />
+                  <label className="label">Full Name *</label>
+                  <input
+                    type="text"
+                    required
+                    className="input"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  />
                 </div>
                 <div>
-                  <label className="label">Mobile Number *</label>
-                  <input type="text" className="input" value={form.phone} onChange={e => setForm({
-                ...form,
-                phone: e.target.value
-              })} required />
+                  <label className="label">Work Email *</label>
+                  <input
+                    type="email"
+                    required
+                    className="input"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div>
+                  <label className="label">Phone (WhatsApp) *</label>
+                  <input
+                    type="tel"
+                    required
+                    className="input"
+                    value={form.phone}
+                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="label">Company / Organization</label>
+                  <input
+                    type="text"
+                    className="input"
+                    value={form.company}
+                    onChange={(e) => setForm({ ...form, company: e.target.value })}
+                  />
                 </div>
               </div>
 
               <div>
-                <label className="label">Company / Organization</label>
-                <input type="text" className="input" value={form.company} onChange={e => setForm({
-              ...form,
-              company: e.target.value
-            })} />
+                <label className="label">Consultation Requirement *</label>
+                <textarea
+                  required
+                  rows={3}
+                  className="textarea"
+                  value={form.requirement}
+                  onChange={(e) => setForm({ ...form, requirement: e.target.value })}
+                />
               </div>
 
-              <div>
-                <label className="label">Legal Advisory Details</label>
-                <textarea className="textarea" rows={3} value={form.requirement} onChange={e => setForm({
-              ...form,
-              requirement: e.target.value
-            })} required />
-              </div>
-
-              {/* Bot Honeypot field (hidden from real users) */}
-              <input type="text" name="honeypot" style={{
-            display: 'none'
-          }} tabIndex={-1} autoComplete="off" value={form.honeypot} onChange={e => setForm({
-            ...form,
-            honeypot: e.target.value
-          })} />
-
-              {/* UTM & Attribution Preview */}
-              <div style={{
-            padding: '12px 14px',
-            backgroundColor: '#0c121e',
-            borderRadius: '8px',
-            border: '1px solid #1e293b',
-            fontSize: '12px',
-            color: '#94a3b8'
-          }}>
-                <strong style={{
-              color: '#cbd5e1'
-            }}>Simulated Attribution Headers:</strong>
-                <div style={{
-              marginTop: '4px',
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '8px'
-            }}>
-                  <span>utm_source: <code style={{
-                  color: '#38bdf8'
-                }}>{form.utm_source}</code></span>
-                  <span>utm_medium: <code style={{
-                  color: '#38bdf8'
-                }}>{form.utm_medium}</code></span>
-                  <span>gclid: <code style={{
-                  color: '#38bdf8'
-                }}>{form.gclid.slice(0, 15)}...</code></span>
+              {/* Attribution Meta Fields Simulation */}
+              <div
+                style={{
+                  backgroundColor: '#f8fafc',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '8px',
+                  padding: '12px 14px'
+                }}
+              >
+                <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  Automatic Marketing Attribution Captured
+                </span>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginTop: '6px' }}>
+                  <div style={{ fontSize: '11.5px', color: '#475569' }}>
+                    <strong>Source:</strong> {form.utm_source}
+                  </div>
+                  <div style={{ fontSize: '11.5px', color: '#475569' }}>
+                    <strong>Medium:</strong> {form.utm_medium}
+                  </div>
+                  <div style={{ fontSize: '11.5px', color: '#475569' }}>
+                    <strong>Campaign:</strong> {form.utm_campaign}
+                  </div>
                 </div>
               </div>
 
-              <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}>
-                <input type="checkbox" id="consentCheckbox" checked={form.consent} onChange={e => setForm({
-              ...form,
-              consent: e.target.checked
-            })} required />
-                <label htmlFor="consentCheckbox" style={{
-              fontSize: '12.5px',
-              color: '#94a3b8'
-            }}>
-                  I consent to Legal Wegal contacting me regarding this legal inquiry via Phone, Email, and WhatsApp.
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <input
+                  type="checkbox"
+                  id="consentCheckbox"
+                  required
+                  checked={form.consent}
+                  onChange={(e) => setForm({ ...form, consent: e.target.checked })}
+                  style={{ accentColor: '#09090b', width: '15px', height: '15px' }}
+                />
+                <label htmlFor="consentCheckbox" style={{ fontSize: '12px', color: '#64748b' }}>
+                  I consent to Legal Wegal contacting me via Phone/WhatsApp regarding legal advisory services.
                 </label>
               </div>
 
-              <button type="submit" className="btn btn-emerald" style={{
-            padding: '12px',
-            marginTop: '6px'
-          }} disabled={submitting}>
-                <Send size={16} />
-                <span>{submitting ? 'Submitting Inquiry...' : 'Submit Legal Advisory Request'}</span>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="btn-pill-dark"
+                style={{
+                  padding: '12px',
+                  marginTop: '4px',
+                  width: '100%',
+                  borderRadius: '8px'
+                }}
+              >
+                <span>{submitting ? 'Submitting Inquiry...' : 'Submit Consultation Request'}</span>
+                <Send size={15} />
               </button>
             </form>
-          </div>}
+          </div>
+        )}
       </div>
-    </div>;
+    </div>
+  );
 }
